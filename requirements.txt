@@ -1,45 +1,7 @@
-#aiohttp @ file:///C:/ci/aiohttp_1646806572557/work
-aiosignal @ file:///tmp/build/80754af9/aiosignal_1637843061372/work
-alabaster @ file:///home/ktietz/src/ci/alabaster_1611921544520/work
+
 anaconda-client @ file:///C:/ci/anaconda-client_1635342725944/work
 anaconda-navigator==2.2.0
 anaconda-project @ file:///tmp/build/80754af9/anaconda-project_1637161053845/work
-anyio==3.6.1
-appdirs==1.4.4
-argon2-cffi @ file:///opt/conda/conda-bld/argon2-cffi_1645000214183/work
-argon2-cffi-bindings @ file:///C:/ci/argon2-cffi-bindings_1644551690056/work
-arrow @ file:///opt/conda/conda-bld/arrow_1649166651673/work
-astroid @ file:///C:/ci/astroid_1628063282661/work
-astropy @ file:///C:/ci/astropy_1650634291321/work
-asttokens @ file:///opt/conda/conda-bld/asttokens_1646925590279/work
-async-timeout @ file:///tmp/build/80754af9/async-timeout_1637851218186/work
-atomicwrites==1.4.0
-attrs @ file:///opt/conda/conda-bld/attrs_1642510447205/work
-Automat @ file:///tmp/build/80754af9/automat_1600298431173/work
-autopep8 @ file:///opt/conda/conda-bld/autopep8_1639166893812/work
-Babel==2.10.1
-backcall @ file:///home/ktietz/src/ci/backcall_1611930011877/work
-backports.functools-lru-cache @ file:///tmp/build/80754af9/backports.functools_lru_cache_1618170165463/work
-backports.tempfile @ file:///home/linux1/recipes/ci/backports.tempfile_1610991236607/work
-backports.weakref==1.0.post1
-bcrypt @ file:///C:/ci/bcrypt_1607022693089/work
-beautifulsoup4 @ file:///C:/ci/beautifulsoup4_1650293025093/work
-binaryornot @ file:///tmp/build/80754af9/binaryornot_1617751525010/work
-bitarray @ file:///C:/ci/bitarray_1648739663053/work
-bkcharts==0.2
-black==19.10b0
-bleach @ file:///opt/conda/conda-bld/bleach_1641577558959/work
-bokeh @ file:///C:/ci/bokeh_1638362966927/work
-boto3 @ file:///opt/conda/conda-bld/boto3_1649078879353/work
-botocore @ file:///opt/conda/conda-bld/botocore_1649076662316/work
-Bottleneck @ file:///C:/ci/bottleneck_1648010904582/work
-brotlipy==0.7.0
-cachetools @ file:///tmp/build/80754af9/cachetools_1619597386817/work
-certifi==2021.10.8
-cffi @ file:///C:/ci_310/cffi_1642682485096/work
-chardet @ file:///C:/ci/chardet_1607706937985/work
-charset-normalizer==2.0.12
-click @ file:///C:/ci/click_1646038595831/work
 cloudpickle @ file:///tmp/build/80754af9/cloudpickle_1632508026186/work
 clyent==1.2.2
 colorama @ file:///tmp/build/80754af9/colorama_1607707115595/work
