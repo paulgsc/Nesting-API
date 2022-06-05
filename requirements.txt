@@ -8,7 +8,7 @@ anyio==3.6.1
 appdirs==1.4.4
 #argon2-cffi @ file:///opt/conda/conda-bld/argon2-cffi_1645000214183/work
 #argon2-cffi-bindings @ file:///C:/ci/argon2-cffi-bindings_1644551690056/work
-arrow @ file:///opt/conda/conda-bld/arrow_1649166651673/work
+#arrow @ file:///opt/conda/conda-bld/arrow_1649166651673/work
 astroid @ file:///C:/ci/astroid_1628063282661/work
 astropy @ file:///C:/ci/astropy_1650634291321/work
 asttokens @ file:///opt/conda/conda-bld/asttokens_1646925590279/work
