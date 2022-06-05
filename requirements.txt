@@ -3,7 +3,6 @@
 anaconda-navigator==2.2.0
 conda==4.13.0
 conda-build==3.21.9
-glob2 @ file:///home/linux1/recipes/ci/glob2_1610991677669/work
 google==3.0.0
 google-api-core==2.8.0
 google-api-python-client==2.48.0
@@ -43,30 +42,8 @@ pandas @ file:///C:/ci/pandas_1650373458095/work
 pandocfilters @ file:///opt/conda/conda-bld/pandocfilters_1643405455980/work
 
 
-#pywin32==302
-pywin32-ctypes @ file:///C:/ci/pywin32-ctypes_1607553594546/work
-pywinpty @ file:///C:/ci_310/pywinpty_1644230983541/work/target/wheels/pywinpty-2.0.2-cp39-none-win_amd64.whl
-PyYAML==6.0
 
-scikit-image @ file:///C:/ci/scikit-image_1648214340990/work
-scikit-learn @ file:///C:/ci/scikit-learn_1642617276183/work
-scikit-learn-intelex==2021.20220215.102710
-scipy @ file:///C:/ci/scipy_1641555170412/work
-Scrapy @ file:///C:/ci/scrapy_1646837986255/work
-seaborn @ file:///tmp/build/80754af9/seaborn_1629307859561/work
-Send2Trash @ file:///tmp/build/80754af9/send2trash_1632406701022/work
-service-identity @ file:///Users/ktietz/demo/mc3/conda-bld/service_identity_1629460757137/work
-sip==4.19.13
-six @ file:///tmp/build/80754af9/six_1644875935023/work
 
-tblib @ file:///Users/ktietz/demo/mc3/conda-bld/tblib_1629402031467/work
-tenacity @ file:///C:/ci/tenacity_1626248381338/work
-#terminado @ file:///C:/ci/terminado_1644322780199/work
-testpath @ file:///tmp/build/80754af9/testpath_1624638946665/work
-text-unidecode @ file:///Users/ktietz/demo/mc3/conda-bld/text-unidecode_1629401354553/work
-textdistance @ file:///tmp/build/80754af9/textdistance_1612461398012/work
-threadpoolctl @ file:///Users/ktietz/demo/mc3/conda-bld/threadpoolctl_1629802263681/work
-three-merge @ file:///tmp/build/80754af9/three-merge_1607553261110/work
 
 uritemplate==4.1.1
 urllib3==1.26.9
@@ -74,16 +51,4 @@ voila==0.3.5
 w3lib @ file:///Users/ktietz/demo/mc3/conda-bld/w3lib_1629359764703/work
 
 widgetsnbextension @ file:///C:/ci/widgetsnbextension_1644991377168/work
-win-inet-pton @ file:///C:/ci/win_inet_pton_1605306162074/work
-win-unicode-console==0.5
-wincertstore==0.2
-wrapt @ file:///C:/ci/wrapt_1607574570428/work
-xarray @ file:///opt/conda/conda-bld/xarray_1639166117697/work
-xlrd @ file:///tmp/build/80754af9/xlrd_1608072521494/work
-XlsxWriter @ file:///opt/conda/conda-bld/xlsxwriter_1649073856329/work
-xlwings==0.24.9
-yapf @ file:///tmp/build/80754af9/yapf_1615749224965/work
-yarl @ file:///C:/ci/yarl_1606940155993/work
-zict==2.0.0
-zipp==3.8.0
-zope.interface @ file:///C:/ci/zope.interface_1625036252485/work
+
