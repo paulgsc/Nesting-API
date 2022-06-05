@@ -1,6 +1,5 @@
 
 
-anaconda-navigator==2.2.0
 conda==4.13.0
 conda-build==3.21.9
 google==3.0.0
