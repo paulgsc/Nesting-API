@@ -16,8 +16,7 @@ jupyterlab-server==2.14.0
 
 oauthlib==3.2.0
 
-pandas @ file:///C:/ci/pandas_1650373458095/work
-pandocfilters @ file:///opt/conda/conda-bld/pandocfilters_1643405455980/work
+
 
 
 
