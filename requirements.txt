@@ -1,7 +1,6 @@
 
 
-conda==4.13.0
-conda-build==3.21.9
+
 google==3.0.0
 google-api-core==2.8.0
 google-api-python-client==2.48.0
