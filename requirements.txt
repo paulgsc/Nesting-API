@@ -8,19 +8,7 @@ google-api-core==2.8.0
 google-api-python-client==2.48.0
 google-auth-httplib2==0.1.0
 google-auth-oauthlib==0.5.1
-google-cloud-core @ file:///tmp/build/80754af9/google-cloud-core_1625077425256/work
-google-cloud-storage @ file:///tmp/build/80754af9/google-cloud-storage_1601307969662/work
-google-crc32c @ file:///C:/ci/google-crc32c_1613234249694/work
-google-resumable-media @ file:///tmp/build/80754af9/google-resumable-media_1624367812531/work
-googleapis-common-protos @ file:///C:/ci/googleapis-common-protos-feedstock_1617957814607/work
-imagecodecs @ file:///C:/ci/imagecodecs_1635511087451/work
-imageio @ file:///tmp/build/80754af9/imageio_1617700267927/work
-imagesize @ file:///tmp/build/80754af9/imagesize_1637939814114/work
-importlib-metadata==4.11.4
-intervaltree @ file:///Users/ktietz/demo/mc3/conda-bld/intervaltree_1630511889664/work
-ipykernel @ file:///C:/ci/ipykernel_1646982785443/work/dist/ipykernel-6.9.1-py3-none-any.whl
-ipython @ file:///C:/ci/ipython_1648817223581/work
-ipython-genutils @ file:///tmp/build/80754af9/ipython_genutils_1606773439826/work
+
 ipywidgets @ file:///tmp/build/80754af9/ipywidgets_1634143127070/work
 isort @ file:///tmp/build/80754af9/isort_1628603791788/work
 jupyter @ file:///C:/ci/jupyter_1607685287094/work
