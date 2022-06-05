@@ -6,7 +6,6 @@ conda-build==3.21.9
 google==3.0.0
 google-api-core==2.8.0
 google-api-python-client==2.48.0
-google-auth @ file:///tmp/build/80754af9/google-auth_1626320605116/work
 google-auth-httplib2==0.1.0
 google-auth-oauthlib==0.5.1
 google-cloud-core @ file:///tmp/build/80754af9/google-cloud-core_1625077425256/work
