@@ -15,8 +15,7 @@ import re
 # In[2]:
 
 
-df = pd.read_excel('myexport.xlsx',sheet_name='export',index_col=False)
-df.replace(np.nan,'',inplace=True)
+
 
 # Convert all date columns to string type
 for col in  df.select_dtypes(include=['datetime64']).columns.tolist():
