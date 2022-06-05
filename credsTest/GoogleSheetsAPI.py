@@ -17,9 +17,7 @@ import re
 
 
 
-# Convert all date columns to string type
-for col in  df.select_dtypes(include=['datetime64']).columns.tolist():
-    df[col] = df[col].astype(str)
+
 
 
 # In[3]:
