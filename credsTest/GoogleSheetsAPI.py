@@ -12,15 +12,6 @@ import numpy as np
 import re
 
 
-# In[2]:
-
-
-
-
-
-
-
-# In[3]:
 
 
 FOLDER_PATH = Path.cwd()
@@ -169,6 +160,10 @@ def clearSheetsRange(gsheetId,worksheet_name,cell_range):
 def getLatestFileName (path: Path, pattern: str = "*"):
     files = path.rglob(pattern)
     return max(files,key=lambda x: x.stat().st_ctime)
+def getLatestFileNameTime (path: Path, pattern: str = "*"):
+    files = path.rglob(pattern)
+    return max(files,key=lambda x: x.stat().st_ctime).stat().st_ctime
+
 
 
 

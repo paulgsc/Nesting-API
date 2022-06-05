@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[7]:
+# In[ ]:
 
 
 """
@@ -60,7 +60,26 @@ from credsTest.GoogleSheetsAPI import *
 from credsTest.readSheets import main
 import re
 
-def createSewingPivot(pattern):
+def file_time_stamp(pattern):
+
+    """
+    Createing nest file
+    """
+
+    # read export
+    # first define path
+    location = 'Downloads'
+    file_path = Path.cwd() / location
+
+    # next assign path and define pattern of file name
+    downloaded_file = Path.cwd() / 'Downloads'
+    pattern = '*'+pattern+'*'
+
+    # use funciton to get latest time of file
+    return {'time': getLatestFileNameTime(downloaded_file, pattern) , 'file':getLatestFileName(downloaded_file,pattern)}
+
+
+def createSummaPivot(pattern):
 
     """
     Createing nest file
@@ -91,84 +110,66 @@ def createSewingPivot(pattern):
     modify nest file
 
     """
-    def createCoversData(nest_file):
-        # Mirror excel countif to generate sliced so line qty to produce
-        tempList = nest_file['Sale Order Line/Product/Display Name'].fillna('blanks').tolist()
-        bondi_chicory = []
-        covers_rename = []
-        for x in range(0,len(tempList)):
-            if (re.search('(?i)(?:mst1 bondi|mst1 chicory)',tempList[x])!=None):
-                bondi_chicory.append((re.search('(?i)(?:mst1 bondi|mst1 chicory)',tempList[x])).group(0))
-            else:
-                bondi_chicory.append('other')
-        nest_file['BONDI|CHICORY'] = bondi_chicory
 
-        covers_rename = nest_file['Product/Display Name'].fillna('blanks').tolist()
-        for x in range(0,len(covers_rename)):
-            covers_rename[x] = re.sub(r'(?i)(?:\[.+\]\s|\sv2$)','',covers_rename[x])
+    # Mirror excel countif to generate sliced so line qty to produce
+    tempList = nest_file['Sale Order Line/Product/Display Name'].fillna('blanks').tolist()
+    bondi_chicory = []
+    for x in range(0,len(tempList)):
+        if (re.search('(?i)(?:mst1 bondi|mst1 chicory)',tempList[x])!=None):
+            bondi_chicory.append((re.search('(?i)(?:mst1 bondi|mst1 chicory)',tempList[x])).group(0))
+        else:
+            bondi_chicory.append('other')
+    nest_file['BONDI|CHICORY'] = bondi_chicory
 
-        nest_file['Covers'] = covers_rename
-        rename = nest_file['Sale Order Line/Product/Display Name'].fillna('blanks').tolist()
-        rename2 = nest_file['Product/Display Name'].fillna('blanks').tolist()
-        for x in range(0,len(rename)):
-            rename[x] = re.sub(r'(?i)(.*\]\s)','',rename[x])
-            rename2[x] = re.sub(r'(?i)(.*\]\s)','',rename2[x])
-        to_assign = {'Product Name':rename,'Component Name':rename2}
-        nest_file = nest_file.assign(**to_assign)
+    anaAeroAce = []
+    for x in range(0,len(tempList)):
+        if (re.search('(?i)(?:mst1 ana|mst1 ace|mst1 aero)',tempList[x])!=None):
+            anaAeroAce.append((re.search('(?i)(?:mst1 ana|mst1 ace|mst1 aero)',tempList[x])).group(0))
+        else:
+            anaAeroAce.append('other')
+    nest_file['ANA|AERO|ACE'] = anaAeroAce
 
-        # use numpy to create countif of so quantity
-        so_count = []
-        list1 = nest_file['Sale Order Line/Qty to Produce'].tolist()
-        tempList = nest_file['Sale Order Line/ID'].tolist()
-        for x in tempList:
-            so_count.append(tempList.count(x))
-        ar1 = np.array(list1)
-        ar2 = np.array(so_count)
-        ar3 = ar1 / ar2
-        nest_file['SO Line Product Qty'] = ar3
-        ar4 =  nest_file['Quantity To Be Produced'].tolist()
-        nest_file['Qty per SO qty'] = ar4 / ar1
+    rename = nest_file['Sale Order Line/Product/Display Name'].fillna('blanks').tolist()
+    rename2 = nest_file['Product/Display Name'].fillna('blanks').tolist()
+    for x in range(0,len(rename)):
+        rename[x] = re.sub(r'(?i)(.*\]\s)','',rename[x])
+        rename2[x] = re.sub(r'(?i)(.*\]\s)','',rename2[x])
+    to_assign = {'Product Name':rename,'Component Name':rename2}
+    nest_file = nest_file.assign(**to_assign)
+
+    # use numpy to create countif of so quantity
+    so_count = []
+    list1 = nest_file['Sale Order Line/Qty to Produce'].tolist()
+    tempList = nest_file['Sale Order Line/ID'].tolist()
+    for x in tempList:
+       so_count.append(tempList.count(x))
+    ar1 = np.array(list1)
+    ar2 = np.array(so_count)
+    ar3 = ar1 / ar2
+    nest_file['SO Line Product Qty'] = ar3
+    ar4 =  nest_file['Quantity To Be Produced'].tolist()
+    nest_file['Qty per SO qty'] = ar4 / ar1
+
+    """
+    Summa wo data detailed table
 
         """
-        sewing wo data detailed table
+    # creating column for fabric number
 
-        """
-        # creating column for fabric number
-
-        # read the fabric color and number for mapping
-        fabric_color = main('1tOkainSd6Q_cdwyPMpAyvs3ze2fCU20yhM1yp4VEHRc','Sheet1!A2:B').dropna()
-        color_att = (nest_file['Sale Order Line/Product Attributes'].astype(str)+', ').str.extract(r'Color:\s(.+?),\s')
-        color_att.columns = ['color']
-        kwargs = {'Fabric Color': color_att['color']}
-        nest_file = nest_file.assign(**kwargs) 
-        nest_file = nest_file.merge(fabric_color,left_on='Fabric Color',right_on='CABA NAME',sort=False).drop('CABA NAME',axis=1)
+    fabric_no = (nest_file['First Raw Material/Display Name'].astype(str)+', ').str.extract(r'\]\s(\d{3}?)\s')
+    fabric_no.columns = ['color']
+    kwargs = {'Fabric #': fabric_no['color']}
+    nest_file = nest_file.assign(**kwargs) 
 
 
-        # s = []
-        # for x in range(0,len(colorList)):
-        #     s.append(re.sub(',.*','',test[x].split('Color: ')[1]))
-        # d = {'Color': s}
-        # color_att = pd.DataFrame(data=d)
 
-        # add target week column
-        df_week = nest_file['Sale Order Line/Commitment Date']
-        df_week = pd.to_datetime(df_week, infer_datetime_format=True)  
-        df_week = df_week.dt.tz_localize('UTC')
-        a= np.array(df_week.dt.strftime('%W'))
-        a = a.astype(int)+1
-        nest_file['So Target Week'] = a
+    # add target week column
+    df_week = nest_file['Sale Order Line/Commitment Date']
+    df_week = pd.to_datetime(df_week, infer_datetime_format=True)  
+    df_week = df_week.dt.tz_localize('UTC')
+    a=df_week.dt.strftime('%W').fillna(0)
+    #nest_file['So Target Week'] = a
 
-        # rename covers to give chicory accent pillow size
-        accentAttr = nest_file['Sale Order Line/Product Attributes'].fillna('blanks').tolist()
-        for x in range(0,len(accentAttr)):
-            accentAttr[x] =  re.sub(r'(?i)(?:.*\spillow\soptions\W\s|\sw/insert)','',accentAttr[x])
-        accentAttr = pd.DataFrame({'attr':accentAttr}) 
-        df4 = pd.DataFrame({'prod':nest_file['Covers']})
-        df = nest_file['Covers'].str.cat(accentAttr['attr'],sep=' ')
-        df1  = pd.DataFrame({'attrProduct':df})
-        df5 = df4.where(~(df4['prod'].str.match('(.*for chicory.*)',case=False)),df1['attrProduct'],axis=0)
-        nest_file['Covers'] =  df5
-        return nest_file
 
 
     # In[ ]:
@@ -179,7 +180,6 @@ def createSewingPivot(pattern):
 
     """
     
-    nest_file = createCoversData(nest_file)
     dict = SheetsNew()
     gsheetId = dict['gsheetId']
     sheetProperties = dict['sheet_names']
@@ -187,7 +187,27 @@ def createSewingPivot(pattern):
     sheet_names = [sheetProperties[0]['properties']['title'],sheetProperties[1]['properties']['title']]
     sheetIds = [sheetProperties[0]['properties']['sheetId'],sheetProperties[1]['properties']['sheetId']]
 
+    # rename worksheet to Summa
+    request_body = {
+      'requests': [
+         {
+           'updateSpreadsheetProperties': {
+                'properties':  {
+                     'title': 'Summa Nesting API'
+                },
+              'fields': 'title'   
+           }
 
+        } 
+      ]
+
+    }
+    request = service.spreadsheets().batchUpdate(
+        spreadsheetId=gsheetId,
+        body=request_body
+    ).execute()
+    
+    
 
     # In[ ]:
 
@@ -228,7 +248,7 @@ def createSewingPivot(pattern):
                                     'rows': [
                                         # row field #1
                                         {
-                                            'sourceColumnOffset': nest_file.columns.get_loc('Odoo Fabric Number'),
+                                            'sourceColumnOffset': nest_file.columns.get_loc('Fabric #'),
                                             'showTotals': True, # display subtotals
                                             'sortOrder': 'ASCENDING',
                                             'repeatHeadings': False,
@@ -236,7 +256,7 @@ def createSewingPivot(pattern):
                                          },
 
                                         {
-                                            'sourceColumnOffset': nest_file.columns.get_loc('Lot/Serial Number/Lot/Serial Number'),
+                                            'sourceColumnOffset': nest_file.columns.get_loc('Sale Order Line/Product/Display Name'),
                                             'showTotals': True, # display subtotals
                                             'sortOrder': 'ASCENDING',
                                             'repeatHeadings': False,
@@ -244,13 +264,21 @@ def createSewingPivot(pattern):
                                         },
 
                                         {
-                                            'sourceColumnOffset': nest_file.columns.get_loc('Sale Order Line/Product/Display Name'),
+                                            'sourceColumnOffset': nest_file.columns.get_loc('Lot/Serial Number/Lot/Serial Number'),
                                             'showTotals': False, # display subtotals
                                             'sortOrder': 'ASCENDING',
                                             'repeatHeadings': False,
     #                                         'label': 'Product List',
                                         },
 
+                                        {
+                                            'sourceColumnOffset': nest_file.columns.get_loc('Sale Order Line/Product Attributes'),
+                                            'showTotals': False, # display subtotals
+                                            'sortOrder': 'ASCENDING',
+                                            'repeatHeadings': False,
+    #                                         'label': 'Product List',
+                                        },
+                                        
                                         {
                                             'sourceColumnOffset': nest_file.columns.get_loc('Sale Order Line/Qty to Produce'),
                                             'showTotals': False, # display subtotals
@@ -270,25 +298,25 @@ def createSewingPivot(pattern):
                                     ],
 
     #                                 Columns Field(s)
-                                    'columns': [
-                                        # column field #1
-                                        {
-                                            'sourceColumnOffset': nest_file.columns.get_loc('Covers'),
-                                            'sortOrder': 'ASCENDING', 
-                                            'showTotals': True
-                                        }
-                                    ],
+#                                     'columns': [
+#                                         # column field #1
+#                                         {
+#                                             'sourceColumnOffset': nest_file.columns.get_loc('Covers'),
+#                                             'sortOrder': 'ASCENDING', 
+#                                             'showTotals': True
+#                                         }
+#                                     ],
 
                                     'criteria': {
-                                        nest_file.columns.get_loc('Operation/Display Name'): {
-                                            'visibleValues': [
-                                                'Sewing QC/Prep'
-                                            ]
-                                        },
+#                                         nest_file.columns.get_loc('Operation/Display Name'): {
+#                                             'visibleValues': [
+#                                                 'Sewing QC/Prep'
+#                                             ]
+#                                         },
 
-                                        nest_file.columns.get_loc('BONDI|CHICORY'): {
+                                        nest_file.columns.get_loc('ANA|AERO|ACE'): {
                                             'visibleValues': [
-                                                'MST1 Bondi', 'MST1 Chicory'
+                                                'MST1 Ana', 'MST1 Aero, MST1 Ace'
                                             ]
                                         },
                                            nest_file.columns.get_loc('Assigned to/Display Name'): {
@@ -319,7 +347,7 @@ def createSewingPivot(pattern):
                                         {
                                             'sourceColumnOffset': nest_file.columns.get_loc('Quantity To Be Produced'),
                                             'summarizeFunction': 'SUM',
-                                            'name': 'Covers Qty:'
+                                            'name': 'Qty per SO qty'
                                         }
                                     ],
 
@@ -347,3 +375,6 @@ def createSewingPivot(pattern):
     return dict;
 
 
+
+
+    
