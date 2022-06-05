@@ -10,14 +10,11 @@ google-auth-httplib2==0.1.0
 google-auth-oauthlib==0.5.1
 
 
-jupyter-client @ file:///tmp/build/80754af9/jupyter_client_1616770841739/work
-jupyter-console @ file:///tmp/build/80754af9/jupyter_console_1616615302928/work
-jupyter-core @ file:///C:/ci/jupyter_core_1646994619043/work
 jupyter-server==1.17.0
 jupyterlab @ file:///opt/conda/conda-bld/jupyterlab_1647445413472/work
 jupyterlab-pygments @ file:///tmp/build/80754af9/jupyterlab_pygments_1601490720602/work
 jupyterlab-server==2.14.0
-jupyterlab-widgets @ file:///tmp/build/80754af9/jupyterlab_widgets_1609884341231/work
+
 
 numpy @ file:///C:/ci/numpy_and_numpy_base_1649782970434/work
 numpydoc @ file:///opt/conda/conda-bld/numpydoc_1643788541039/work
