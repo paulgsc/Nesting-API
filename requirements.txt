@@ -9,9 +9,7 @@ google-api-python-client==2.48.0
 google-auth-httplib2==0.1.0
 google-auth-oauthlib==0.5.1
 
-ipywidgets @ file:///tmp/build/80754af9/ipywidgets_1634143127070/work
-isort @ file:///tmp/build/80754af9/isort_1628603791788/work
-jupyter @ file:///C:/ci/jupyter_1607685287094/work
+
 jupyter-client @ file:///tmp/build/80754af9/jupyter_client_1616770841739/work
 jupyter-console @ file:///tmp/build/80754af9/jupyter_console_1616615302928/work
 jupyter-core @ file:///C:/ci/jupyter_core_1646994619043/work
