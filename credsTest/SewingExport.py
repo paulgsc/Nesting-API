@@ -192,6 +192,27 @@ def createSewingPivot(pattern):
     sheetIds = [sheetProperties[0]['properties']['sheetId'],sheetProperties[1]['properties']['sheetId']]
 
 
+    # rename worksheet to Sewing
+    request_body = {
+      'requests': [
+         {
+           'updateSpreadsheetProperties': {
+                'properties':  {
+                     'title': 'Sewing Nesting API'
+                },
+              'fields': 'title'   
+           }
+
+        } 
+      ]
+
+    }
+    request = service.spreadsheets().batchUpdate(
+        spreadsheetId=gsheetId,
+        body=request_body
+    ).execute()
+
+
 
     # In[ ]:
 
