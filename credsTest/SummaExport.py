@@ -148,7 +148,7 @@ def createSummaPivot(pattern):
     ar3 = ar1 / ar2
     nest_file['SO Line Product Qty'] = ar3
     ar4 =  nest_file['Quantity To Be Produced'].tolist()
-    nest_file['Qty per SO qty'] = ar4 / ar1
+    #nest_file['Qty per SO qty'] = ar4 / ar1
 
     """
     Summa wo data detailed table
@@ -168,7 +168,10 @@ def createSummaPivot(pattern):
     df_week = pd.to_datetime(df_week, infer_datetime_format=True)  
     df_week = df_week.dt.tz_localize('UTC')
     a=df_week.dt.strftime('%W').fillna(0)
-    #nest_file['So Target Week'] = a
+    a = np.array(a)
+    a = a.astype(int)+1
+    a = pd.DataFrame({'target week': a.tolist()})
+    nest_file['So Target Week'] = a
 
 
 
@@ -316,7 +319,7 @@ def createSummaPivot(pattern):
 
                                         nest_file.columns.get_loc('ANA|AERO|ACE'): {
                                             'visibleValues': [
-                                                'MST1 Ana', 'MST1 Aero, MST1 Ace'
+                                                'MST1 ANA', 'MST1 Aero, MST1 Ace'
                                             ]
                                         },
                                            nest_file.columns.get_loc('Assigned to/Display Name'): {
@@ -347,7 +350,7 @@ def createSummaPivot(pattern):
                                         {
                                             'sourceColumnOffset': nest_file.columns.get_loc('Quantity To Be Produced'),
                                             'summarizeFunction': 'SUM',
-                                            'name': 'Qty per SO qty'
+                                            'name': 'SO Line Product Qty'
                                         }
                                     ],
 

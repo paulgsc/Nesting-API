@@ -154,9 +154,13 @@ def createSewingPivot(pattern):
         df_week = nest_file['Sale Order Line/Commitment Date']
         df_week = pd.to_datetime(df_week, infer_datetime_format=True)  
         df_week = df_week.dt.tz_localize('UTC')
-        a= np.array(df_week.dt.strftime('%W'))
+        a=df_week.dt.strftime('%W').fillna(0)
+        a = np.array(a)
         a = a.astype(int)+1
+        a = pd.DataFrame({'target week': a.tolist()})
         nest_file['So Target Week'] = a
+          
+
 
         # rename covers to give chicory accent pillow size
         accentAttr = nest_file['Sale Order Line/Product Attributes'].fillna('blanks').tolist()
