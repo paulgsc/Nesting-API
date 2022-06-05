@@ -11,7 +11,6 @@ google-auth-oauthlib==0.5.1
 
 
 jupyter-server==1.17.0
-jupyterlab @ file:///opt/conda/conda-bld/jupyterlab_1647445413472/work
 jupyterlab-pygments @ file:///tmp/build/80754af9/jupyterlab_pygments_1601490720602/work
 jupyterlab-server==2.14.0
 
