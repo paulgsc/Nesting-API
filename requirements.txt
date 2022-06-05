@@ -1,12 +1,7 @@
 
 
 anaconda-navigator==2.2.0
-anaconda-project @ file:///tmp/build/80754af9/anaconda-project_1637161053845/work
 cloudpickle @ file:///tmp/build/80754af9/cloudpickle_1632508026186/work
-clyent==1.2.2
-colorama @ file:///tmp/build/80754af9/colorama_1607707115595/work
-colorcet @ file:///tmp/build/80754af9/colorcet_1611168489822/work
-comtypes==1.1.10
 conda==4.13.0
 conda-build==3.21.9
 conda-content-trust @ file:///tmp/build/80754af9/conda-content-trust_1617045594566/work
@@ -31,23 +26,10 @@ google-cloud-storage @ file:///tmp/build/80754af9/google-cloud-storage_160130796
 google-crc32c @ file:///C:/ci/google-crc32c_1613234249694/work
 google-resumable-media @ file:///tmp/build/80754af9/google-resumable-media_1624367812531/work
 googleapis-common-protos @ file:///C:/ci/googleapis-common-protos-feedstock_1617957814607/work
-greenlet @ file:///C:/ci/greenlet_1628888275363/work
-grpcio @ file:///C:/ci/grpcio_1637590978642/work
-h5py @ file:///C:/ci/h5py_1637120894255/work
-HeapDict @ file:///Users/ktietz/demo/mc3/conda-bld/heapdict_1630598515714/work
-holoviews @ file:///opt/conda/conda-bld/holoviews_1645454331194/work
-httplib2==0.20.4
-hvplot @ file:///tmp/build/80754af9/hvplot_1627305124151/work
-hyperlink @ file:///tmp/build/80754af9/hyperlink_1610130746837/work
-idna==3.3
 imagecodecs @ file:///C:/ci/imagecodecs_1635511087451/work
 imageio @ file:///tmp/build/80754af9/imageio_1617700267927/work
 imagesize @ file:///tmp/build/80754af9/imagesize_1637939814114/work
 importlib-metadata==4.11.4
-incremental @ file:///tmp/build/80754af9/incremental_1636629750599/work
-inflection==0.5.1
-iniconfig @ file:///home/linux1/recipes/ci/iniconfig_1610983019677/work
-intake @ file:///opt/conda/conda-bld/intake_1647436631684/work
 intervaltree @ file:///Users/ktietz/demo/mc3/conda-bld/intervaltree_1630511889664/work
 ipykernel @ file:///C:/ci/ipykernel_1646982785443/work/dist/ipykernel-6.9.1-py3-none-any.whl
 ipython @ file:///C:/ci/ipython_1648817223581/work
