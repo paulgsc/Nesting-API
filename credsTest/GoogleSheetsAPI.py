@@ -7,6 +7,7 @@
 # import os
 from pathlib import Path
 from credsTest.Google import Create_Service
+from credsTest.readSheets import *;
 import pandas as pd
 import numpy as np
 import re
@@ -114,6 +115,42 @@ def writeDataToSheet(worksheet_name,gsheetId,file_name,sheet_name):
 
 
 # In[8]:
+
+
+# method to add inv for nest pivot
+def addInvValues(df):
+    # read the fabric inventory
+    df_inv = main('1tOkainSd6Q_cdwyPMpAyvs3ze2fCU20yhM1yp4VEHRc','Fabrics Master Data!A:E')
+    options = ['Tony Stock','Justin Stock']
+    for i in range(0,len(options)-1):
+        df_loc = df_inv.loc[df_inv['Stock']==options[i]]
+         # merge inventory to data table
+        df = pd.merge(df,df_loc[['Fabric #','Fabric Yards']],on='Fabric #', how='left')
+        temp = options[i] + ' Fabric Yards'
+        df = df.rename(columns={"Fabric Yards": temp})
+
+    # get inv per wo line for pivot view cal field
+    
+    options = ['Tony Stock','Justin Stock']
+    df_tony = pd.DataFrame({'Fabric #':df['Fabric #']})
+    df_justin = pd.DataFrame({'Fabric #':df['Fabric #']})
+    for i in range(0,len(options)):
+    	df_loc = df_inv.loc[df_inv['Stock']==options[i]]
+    	df = pd.merge(df,df_loc[['Fabric #','Fabric Yards']],on='Fabric #', how='left')
+    	temp = options[i] + ' Fabric Yards'
+    	df = df.rename(columns={"Fabric Yards": temp})
+    	temp = ''
+   
+    # so_count = []
+    # list1 = nest_file['Sale Order Line/Qty to Produce'].tolist()
+    # tempList = nest_file['Fabric Yards'].tolist()
+    # for x in tempList:
+    #     so_count.append(tempList.count(x))
+    # ar1 = np.array(list1)
+    # ar2 = np.array(so_count)
+    # ar3 = ar1 / ar2
+    # nest_file['Fabric Inv Per WO line'] = ar3
+    return df
 
 
 # method to create new sheets  tabs
