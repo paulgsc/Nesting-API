@@ -172,6 +172,7 @@ def createSummaPivot(pattern):
     a = a.astype(int)+1
     a = pd.DataFrame({'target week': a.tolist()})
     nest_file['So Target Week'] = a
+    nest_file = addInvValues(nest_file)
 
 
 

@@ -60,6 +60,92 @@ from credsTest.GoogleSheetsAPI import *
 from credsTest.readSheets import main
 import re
 
+
+def createCoversData(nest_file):
+    # Mirror excel countif to generate sliced so line qty to produce
+    tempList = nest_file['Sale Order Line/Product/Display Name'].fillna('blanks').tolist()
+    bondi_chicory = []
+    covers_rename = []
+    for x in range(0,len(tempList)):
+        if (re.search('(?i)(?:mst1 bondi|mst1 chicory)',tempList[x])!=None):
+            bondi_chicory.append((re.search('(?i)(?:mst1 bondi|mst1 chicory)',tempList[x])).group(0))
+        else:
+            bondi_chicory.append('other')
+    nest_file['BONDI|CHICORY'] = bondi_chicory
+
+    covers_rename = nest_file['Product/Display Name'].fillna('blanks').tolist()
+    for x in range(0,len(covers_rename)):
+        covers_rename[x] = re.sub(r'(?i)(?:\[.+\]\s|\sv2$)','',covers_rename[x])
+
+    nest_file['Covers'] = covers_rename
+    rename = nest_file['Sale Order Line/Product/Display Name'].fillna('blanks').tolist()
+    rename2 = nest_file['Product/Display Name'].fillna('blanks').tolist()
+    for x in range(0,len(rename)):
+        rename[x] = re.sub(r'(?i)(.*\]\s)','',rename[x])
+        rename2[x] = re.sub(r'(?i)(.*\]\s)','',rename2[x])
+    to_assign = {'Product Name':rename,'Component Name':rename2}
+    nest_file = nest_file.assign(**to_assign)
+
+    # use numpy to create countif of so quantity
+    so_count = []
+    list1 = nest_file['Sale Order Line/Qty to Produce'].tolist()
+    tempList = nest_file['Sale Order Line/ID'].tolist()
+    for x in tempList:
+        so_count.append(tempList.count(x))
+    ar1 = np.array(list1)
+    ar2 = np.array(so_count)
+    ar3 = ar1 / ar2
+    nest_file['SO Line Product Qty'] = ar3
+    ar4 =  nest_file['Quantity To Be Produced'].tolist()
+    nest_file['Qty per SO qty'] = ar4 / ar1
+
+    """
+    sewing wo data detailed table
+
+    """
+    # creating column for fabric number
+
+    # read the fabric color and number for mapping
+    fabric_color = main('1tOkainSd6Q_cdwyPMpAyvs3ze2fCU20yhM1yp4VEHRc','Sheet1!A2:B').dropna()
+    color_att = (nest_file['Sale Order Line/Product Attributes'].astype(str)+', ').str.extract(r'Color:\s(.+?),\s')
+    color_att.columns = ['color']
+    kwargs = {'Fabric Color': color_att['color']}
+    nest_file = nest_file.assign(**kwargs) 
+    nest_file = nest_file.merge(fabric_color,left_on='Fabric Color',right_on='CABA NAME',sort=False).drop('CABA NAME',axis=1)
+
+
+    # s = []
+    # for x in range(0,len(colorList)):
+    #     s.append(re.sub(',.*','',test[x].split('Color: ')[1]))
+    # d = {'Color': s}
+    # color_att = pd.DataFrame(data=d)
+
+    # add target week column
+    df_week = nest_file['Sale Order Line/Commitment Date']
+    df_week = pd.to_datetime(df_week, infer_datetime_format=True)  
+    df_week = df_week.dt.tz_localize('UTC')
+    a=df_week.dt.strftime('%W').fillna(0)
+    a = np.array(a)
+    a = a.astype(int)+1
+    a = pd.DataFrame({'target week': a.tolist()})
+    nest_file['So Target Week'] = a
+
+
+
+    # rename covers to give chicory accent pillow size
+    accentAttr = nest_file['Sale Order Line/Product Attributes'].fillna('blanks').tolist()
+    for x in range(0,len(accentAttr)):
+        accentAttr[x] =  re.sub(r'(?i)(?:.*\spillow\soptions\W\s|\sw/insert)','',accentAttr[x])
+    accentAttr = pd.DataFrame({'attr':accentAttr}) 
+    df4 = pd.DataFrame({'prod':nest_file['Covers']})
+    df = nest_file['Covers'].str.cat(accentAttr['attr'],sep=' ')
+    df1  = pd.DataFrame({'attrProduct':df})
+    df5 = df4.where(~(df4['prod'].str.match('(.*for chicory.*)',case=False)),df1['attrProduct'],axis=0)
+    nest_file['Covers'] =  df5
+    return nest_file
+
+
+
 def createSewingPivot(pattern):
 
     """
@@ -91,88 +177,7 @@ def createSewingPivot(pattern):
     modify nest file
 
     """
-    def createCoversData(nest_file):
-        # Mirror excel countif to generate sliced so line qty to produce
-        tempList = nest_file['Sale Order Line/Product/Display Name'].fillna('blanks').tolist()
-        bondi_chicory = []
-        covers_rename = []
-        for x in range(0,len(tempList)):
-            if (re.search('(?i)(?:mst1 bondi|mst1 chicory)',tempList[x])!=None):
-                bondi_chicory.append((re.search('(?i)(?:mst1 bondi|mst1 chicory)',tempList[x])).group(0))
-            else:
-                bondi_chicory.append('other')
-        nest_file['BONDI|CHICORY'] = bondi_chicory
-
-        covers_rename = nest_file['Product/Display Name'].fillna('blanks').tolist()
-        for x in range(0,len(covers_rename)):
-            covers_rename[x] = re.sub(r'(?i)(?:\[.+\]\s|\sv2$)','',covers_rename[x])
-
-        nest_file['Covers'] = covers_rename
-        rename = nest_file['Sale Order Line/Product/Display Name'].fillna('blanks').tolist()
-        rename2 = nest_file['Product/Display Name'].fillna('blanks').tolist()
-        for x in range(0,len(rename)):
-            rename[x] = re.sub(r'(?i)(.*\]\s)','',rename[x])
-            rename2[x] = re.sub(r'(?i)(.*\]\s)','',rename2[x])
-        to_assign = {'Product Name':rename,'Component Name':rename2}
-        nest_file = nest_file.assign(**to_assign)
-
-        # use numpy to create countif of so quantity
-        so_count = []
-        list1 = nest_file['Sale Order Line/Qty to Produce'].tolist()
-        tempList = nest_file['Sale Order Line/ID'].tolist()
-        for x in tempList:
-            so_count.append(tempList.count(x))
-        ar1 = np.array(list1)
-        ar2 = np.array(so_count)
-        ar3 = ar1 / ar2
-        nest_file['SO Line Product Qty'] = ar3
-        ar4 =  nest_file['Quantity To Be Produced'].tolist()
-        nest_file['Qty per SO qty'] = ar4 / ar1
-
-        """
-        sewing wo data detailed table
-
-        """
-        # creating column for fabric number
-
-        # read the fabric color and number for mapping
-        fabric_color = main('1tOkainSd6Q_cdwyPMpAyvs3ze2fCU20yhM1yp4VEHRc','Sheet1!A2:B').dropna()
-        color_att = (nest_file['Sale Order Line/Product Attributes'].astype(str)+', ').str.extract(r'Color:\s(.+?),\s')
-        color_att.columns = ['color']
-        kwargs = {'Fabric Color': color_att['color']}
-        nest_file = nest_file.assign(**kwargs) 
-        nest_file = nest_file.merge(fabric_color,left_on='Fabric Color',right_on='CABA NAME',sort=False).drop('CABA NAME',axis=1)
-
-
-        # s = []
-        # for x in range(0,len(colorList)):
-        #     s.append(re.sub(',.*','',test[x].split('Color: ')[1]))
-        # d = {'Color': s}
-        # color_att = pd.DataFrame(data=d)
-
-        # add target week column
-        df_week = nest_file['Sale Order Line/Commitment Date']
-        df_week = pd.to_datetime(df_week, infer_datetime_format=True)  
-        df_week = df_week.dt.tz_localize('UTC')
-        a=df_week.dt.strftime('%W').fillna(0)
-        a = np.array(a)
-        a = a.astype(int)+1
-        a = pd.DataFrame({'target week': a.tolist()})
-        nest_file['So Target Week'] = a
-          
-
-
-        # rename covers to give chicory accent pillow size
-        accentAttr = nest_file['Sale Order Line/Product Attributes'].fillna('blanks').tolist()
-        for x in range(0,len(accentAttr)):
-            accentAttr[x] =  re.sub(r'(?i)(?:.*\spillow\soptions\W\s|\sw/insert)','',accentAttr[x])
-        accentAttr = pd.DataFrame({'attr':accentAttr}) 
-        df4 = pd.DataFrame({'prod':nest_file['Covers']})
-        df = nest_file['Covers'].str.cat(accentAttr['attr'],sep=' ')
-        df1  = pd.DataFrame({'attrProduct':df})
-        df5 = df4.where(~(df4['prod'].str.match('(.*for chicory.*)',case=False)),df1['attrProduct'],axis=0)
-        nest_file['Covers'] =  df5
-        return nest_file
+    
 
 
     # In[ ]:
@@ -184,6 +189,7 @@ def createSewingPivot(pattern):
     """
     
     nest_file = createCoversData(nest_file)
+    nest_file = addInvValues(nest_file)
     dict = SheetsNew()
     gsheetId = dict['gsheetId']
     sheetProperties = dict['sheet_names']
