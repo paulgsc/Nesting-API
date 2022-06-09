@@ -196,7 +196,6 @@ def add_sheets(gsheetId, sheet_name):
 def getSheetProperties(Url):
    
     gsheetId = re.sub(r'(?i)(^.+?/d/|/edit.*$)','',Url)
-    print('this is the gsheetId ' + gsheetId)
     sheet_metadata = service.spreadsheets().get(spreadsheetId=gsheetId).execute()
     return sheet_metadata.get('sheets', '')
 
@@ -763,13 +762,12 @@ def createSummaPivotConsumption(dict,Url,nest_file):
 
     gsheetId = dict['gsheetId']
     add_sheets(gsheetId, 'Pivot Fabric Consumption')
-    print('next is get sheet')
+
     sheetProperties = getSheetProperties(Url)
     print('get sheet is done')
     sheet_names = [sheetProperties[0]['properties']['title'],sheetProperties[2]['properties']['title']]
     sheetIds = [sheetProperties[0]['properties']['sheetId'],sheetProperties[2]['properties']['sheetId']]
-    print(sheetIds)
-    print(Url)
+
 
 
     """
@@ -807,7 +805,7 @@ def createSummaPivotConsumption(dict,Url,nest_file):
                                          },
 
                                         {
-                                            'sourceColumnOffset': nest_file.columns.get_loc('Sale Order Line/Product/Display Name'),
+                                            'sourceColumnOffset': nest_file.columns.get_loc('So Target Week'),
                                             'showTotals': True, # display subtotals
                                             'sortOrder': 'ASCENDING',
                                             'repeatHeadings': False,
@@ -896,9 +894,44 @@ def createSummaPivotConsumption(dict,Url,nest_file):
                                     'values': [
                                         # value field #1
                                         {
-                                            'sourceColumnOffset': nest_file.columns.get_loc('Quantity To Be Produced'),
+                                            'sourceColumnOffset': nest_file.columns.get_loc('Manufacturing Order/Raw Materials/Initial Demand'),
+                                            'summarizeFunction': 'SUM',
+                                            'name': 'Yards Consumption'
+                                        },
+                                        
+                                        # value field #2
+                                        {
+                                            'sourceColumnOffset': nest_file.columns.get_loc('SO Line Product Qty'),
                                             'summarizeFunction': 'SUM',
                                             'name': 'SO Line Product Qty'
+                                        },
+                                        
+                                        # value field #3
+                                        {
+                                            'sourceColumnOffset': nest_file.columns.get_loc('Tony Stock Fabric Yards'),
+                                            'summarizeFunction': 'MAX',
+                                            'name': 'Tony Inventory'
+                                        },
+                                        
+                                        # value field #4
+                                        {
+                                            'sourceColumnOffset': nest_file.columns.get_loc('Justin Stock Fabric Yards'),
+                                            'summarizeFunction': 'MAX',
+                                            'name': 'Justin Inventory'
+                                        },
+                                        
+                                        # value field #5
+                                        {
+                                            'summarizeFunction': "CUSTOM",
+                                            "name": "Tony Delta",
+                                            "formula": "=MAX('Tony Stock Fabric Yards')-SUM('Manufacturing Order/Raw Materials/Initial Demand')"
+                                        },
+                                        
+                                        # value field #6
+                                        {
+                                            'summarizeFunction': "CUSTOM",
+                                            "name": "Justin Delta",
+                                            "formula": "=MAX('Justin Stock Fabric Yards')-SUM('Manufacturing Order/Raw Materials/Initial Demand')"
                                         }
                                     ],
 
