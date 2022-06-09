@@ -146,6 +146,7 @@ def addInvValues(df):
         df = pd.merge(df,df_loc[['Fabric #','Fabric Yards']],on='Fabric #', how='left')
         temp = options[i] + ' Fabric Yards'
         df = df.rename(columns={"Fabric Yards": temp})
+        df[temp] = df[temp].astype(str).astype(float)
       
 
     # get inv per wo line for pivot view cal field
@@ -191,6 +192,14 @@ def add_sheets(gsheetId, sheet_name):
         return response
     except Exception as e:
         print(e)
+
+def getSheetProperties(Url):
+   
+    gsheetId = re.sub(r'(?i)(^.+?/d/|/edit.*$)','',Url)
+    print('this is the gsheetId ' + gsheetId)
+    sheet_metadata = service.spreadsheets().get(spreadsheetId=gsheetId).execute()
+    return sheet_metadata.get('sheets', '')
+
 
 def clearSheets(gsheetId,worksheet_name):
     service.spreadsheets().values().clear(
@@ -320,6 +329,7 @@ def createCoversData(nest_file):
     df5 = df4.where(~(df4['prod'].str.match('(.*for chicory.*)',case=False)),df1['attrProduct'],axis=0)
     nest_file['Covers'] =  df5
     nest_file = addInvValues(nest_file)
+    nest_file['Fabric #'] = nest_file['Fabric #'].fillna(0)
     nest_file['Fabric #'] = nest_file['Fabric #'].astype(str).astype(int)
     return nest_file
 
@@ -386,6 +396,7 @@ def createSummaData(nest_file):
     a = pd.DataFrame({'target week': a.tolist()})
     nest_file['So Target Week'] = a
     nest_file = addInvValues(nest_file)
+    nest_file['Fabric #'] = nest_file['Fabric #'].fillna(0)
     nest_file['Fabric #'] = nest_file['Fabric #'].astype(str).astype(int)
 
     return nest_file
@@ -748,6 +759,177 @@ def createSummaPivot(dict,nest_file):
         body=request_body
     ).execute()
     
+def createSummaPivotConsumption(dict,Url,nest_file):
+
+    gsheetId = dict['gsheetId']
+    add_sheets(gsheetId, 'Pivot Fabric Consumption')
+    print('next is get sheet')
+    sheetProperties = getSheetProperties(Url)
+    print('get sheet is done')
+    sheet_names = [sheetProperties[0]['properties']['title'],sheetProperties[2]['properties']['title']]
+    sheetIds = [sheetProperties[0]['properties']['sheetId'],sheetProperties[2]['properties']['sheetId']]
+    print(sheetIds)
+    print(Url)
+
+
+    """
+    create pivot table using data inserted to sheets
+
+    """
+
+    # PivotTable JSON Template
+    request_body = {
+        'requests': [
+            {
+                'updateCells': {
+                    'rows': {
+                        'values': [
+                            {
+                                'pivotTable': {
+                                    # Data Source
+                                    'source': {
+                                        'sheetId': sheetIds[0],
+                                        'startRowIndex': 0,
+                                        'startColumnIndex': 0,
+                                        'endRowIndex': len(nest_file),
+                                        'endColumnIndex': len(nest_file.columns) # base index is 1
+                                    },
+
+                                    # Rows Field(s)
+                                    'rows': [
+                                        # row field #1
+                                        {
+                                            'sourceColumnOffset': nest_file.columns.get_loc('Fabric #'),
+                                            'showTotals': True, # display subtotals
+                                            'sortOrder': 'ASCENDING',
+                                            'repeatHeadings': False,
+                                            'label': 'Fabric #',
+                                         },
+
+                                        {
+                                            'sourceColumnOffset': nest_file.columns.get_loc('Sale Order Line/Product/Display Name'),
+                                            'showTotals': True, # display subtotals
+                                            'sortOrder': 'ASCENDING',
+                                            'repeatHeadings': False,
+    #                                         'label': 'Product List',
+                                        },
+
+                                        {
+                                            'sourceColumnOffset': nest_file.columns.get_loc('Lot/Serial Number/Lot/Serial Number'),
+                                            'showTotals': False, # display subtotals
+                                            'sortOrder': 'ASCENDING',
+                                            'repeatHeadings': False,
+    #                                         'label': 'Product List',
+                                        },
+
+                                        {
+                                            'sourceColumnOffset': nest_file.columns.get_loc('Sale Order Line/Product Attributes'),
+                                            'showTotals': False, # display subtotals
+                                            'sortOrder': 'ASCENDING',
+                                            'repeatHeadings': False,
+    #                                         'label': 'Product List',
+                                        },
+                                        
+                                        {
+                                            'sourceColumnOffset': nest_file.columns.get_loc('Sale Order Line/Qty to Produce'),
+                                            'showTotals': False, # display subtotals
+                                            'sortOrder': 'ASCENDING',
+                                            'repeatHeadings': False,
+    #                                         'label': 'Product List',
+                                        }
+
+    #                                     {
+    #                                         'sourceColumnOffset': 16,
+    #                                         'showTotals': False, # display subtotals
+    #                                         'sortOrder': 'ASCENDING',
+    #                                         'repeatHeadings': False,
+    # #                                         'label': 'Product List',
+    #                                     }                   
+
+                                    ],
+
+    #                                 Columns Field(s)
+#                                     'columns': [
+#                                         # column field #1
+#                                         {
+#                                             'sourceColumnOffset': nest_file.columns.get_loc('Covers'),
+#                                             'sortOrder': 'ASCENDING', 
+#                                             'showTotals': True
+#                                         }
+#                                     ],
+
+                                    'criteria': {
+#                                         nest_file.columns.get_loc('Operation/Display Name'): {
+#                                             'visibleValues': [
+#                                                 'Sewing QC/Prep'
+#                                             ]
+#                                         },
+
+                                        nest_file.columns.get_loc('ANA|AERO|ACE'): {
+                                            'visibleValues': [
+                                                'MST1 ANA', 'MST1 Aero, MST1 Ace'
+                                            ]
+                                        },
+                                           nest_file.columns.get_loc('Assigned to/Display Name'): {
+                                            'visibleValues': [
+                                                'FALSE'
+                                            ]
+                                        },
+
+    #                                     11: {
+    #                                         'condition': {
+    #                                             'type': 'NUMBER_BETWEEN',
+    #                                             'values': [
+    #                                                 {
+    #                                                     'userEnteredValue': '10000'
+    #                                                 },
+    #                                                 {
+    #                                                     'userEnteredValue': '100000'
+    #                                                 }
+    #                                             ]
+    #                                         },
+    #                                         'visibleByDefault': True
+    #                                     }
+                                    },
+
+                                    # Values Field(s)
+                                    'values': [
+                                        # value field #1
+                                        {
+                                            'sourceColumnOffset': nest_file.columns.get_loc('Quantity To Be Produced'),
+                                            'summarizeFunction': 'SUM',
+                                            'name': 'SO Line Product Qty'
+                                        }
+                                    ],
+
+                                    'valueLayout': 'HORIZONTAL'
+                                }
+                            }
+                        ]
+                    },
+
+                    'start': {
+                        'sheetId': sheetIds[1],
+                        'rowIndex': 0, # 4th row
+                        'columnIndex': 0 # 3rd column
+                    },
+                    'fields': 'pivotTable'
+                }
+            }
+        ]
+    }
+
+    response = service.spreadsheets().batchUpdate(
+        spreadsheetId=gsheetId,
+        body=request_body
+    ).execute()
+    
+
+
+
+
+
+
 
 
 
